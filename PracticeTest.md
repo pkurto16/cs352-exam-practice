@@ -178,12 +178,151 @@ VarDec(
   )
 )
 ```
-### Questions 7: Please write the AST of:
+### Question 7: Please write the AST of:
 ```
 def f(x: Int) = { g(x) + 1 };
 def g(x: Int): Int = 2 * x;
 f(1 + 1)
 ```
-## Week 4-5
-## Week 6
-## Week 7
+## Week 4 - CMScala to CPS
+todo: Tail and Cond Opt + SSA, phi functions and the 2 alternative IRs
+
+### Question 8: Please rewrite the following in CPS Scala Code:
+a)
+```
+def gcd(x: Int, y: Int): Unit =
+  if (y == 0)
+    printInt(x)
+  else
+    gcd(y, x % y);
+gcd(2016, 714)
+```
+b)
+```
+def isEven(n: Int): Boolean =
+  if (n == 0) true else isOdd(n - 1)
+def isOdd(n: Int): Boolean =
+  if (n == 0) false else isEven(n - 1)
+isEven(5)
+```
+
+<img width="456" alt="Screenshot 2025-03-12 at 6 37 57 PM" src="https://github.com/user-attachments/assets/3bc9099c-ba4c-4df4-863e-d92c9857cf25" />
+<img width="459" alt="Screenshot 2025-03-12 at 6 38 12 PM" src="https://github.com/user-attachments/assets/85fb566f-3651-4318-bed2-c8f74dbe2656" />
+
+### Question 9: Given the following CMS to CPS translation rules, translate the CMS ASTs to CPS ASTs
+
+a)
+```
+AST (Simplified):
+
+LetRec(
+  List(
+    FunDef(
+      "max",
+      List(
+        Arg("x"),
+        Arg("y")
+      ),
+      If(
+        Prim(">", List(Ref("x"), Ref("y"))),
+        Ref("x"),
+        Ref("y")
+      )
+    )
+  ),
+  App(
+    Ref("max"),
+    List(
+      Lit(IntLit(2016)),
+      Lit(IntLit(714))
+    )
+  )
+)
+```
+b)
+```
+AST:
+
+VarDec(
+  "c",
+  BooleanType,
+  Lit(BoolLit(true)),
+  While(
+    Ref("c"),
+    VarAssign("c", Lit(BoolLit(false))),
+    Lit(IntLit(42))
+  )
+)
+
+```
+c)
+```
+AST:
+
+Let(
+  "arr",
+  ArrayType(IntType),
+  Prim("block-alloc-242", List(Lit(IntLit(5)))),
+  Let(
+    "dummy",
+    UnitType,
+    Prim("block-set", List(Ref("arr"), Lit(IntLit(3)), Lit(IntLit(99)))),
+    Prim("block-get", List(Ref("arr"), Lit(IntLit(3))))
+  )
+)
+
+```
+
+## Week 5 - Value Representation
+todo: tagged integer arithmetic (AST or just for value), tagged block + I/O ops, type check functions (via tag)
+
+## Week 6 - Closure Conversion
+todo: study free variables as shown in image
+<img width="398" alt="Screenshot 2025-03-12 at 6 49 23 PM" src="https://github.com/user-attachments/assets/2dfa6523-ef25-48a3-92e8-f8832fdd9a22" />
+
+### Non-Optimized
+<img width="460" alt="Screenshot 2025-03-12 at 6 49 51 PM" src="https://github.com/user-attachments/assets/c34a92af-dbd1-4658-9ddb-0736022d1b79" />
+<img width="228" alt="Screenshot 2025-03-12 at 6 50 20 PM" src="https://github.com/user-attachments/assets/760876f1-8e18-4288-a0b2-d7dc00a107c7" />
+
+### Optimized
+<img width="486" alt="Screenshot 2025-03-12 at 6 50 56 PM" src="https://github.com/user-attachments/assets/bc175efc-01bc-4678-b824-ea22166e25de" />
+
+### Question 10: As detailed as possible, write Pseudo/Scala code for the bodies and locations of the worker and wrapper functions.
+a)
+
+```
+def processList(lst: List[Int]): List[Int] = {
+  val offset = 5
+  def processEven(l: List[Int]): List[Int] = l match {
+    case Nil => Nil
+    case h :: t =>
+      if (h % 2 == 0) (h + offset) :: processOdd(t)
+      else processOdd(t)
+  }
+  def processOdd(l: List[Int]): List[Int] = l match {
+    case Nil => Nil
+    case h :: t =>
+      if (h % 2 != 0) (h - offset) :: processEven(t)
+      else processEven(t)
+  }
+  processEven(lst)
+}
+```
+
+b)
+
+```
+def makeAccumulator(initial: Int): Int => Int = {
+  val base = initial + 10
+  def accumulator(x: Int): Int = {
+    def loop(n: Int, acc: Int): Int =
+      if (n <= 0) acc else loop(n - 1, acc * x + base)
+    loop(x, 1)
+  }
+  accumulator
+}
+makeAccumulator(20)
+```
+## Week 7 - Optimization
+
+todo: Make some optimization examples for the techniques discussed in class and when we should or shouldn't optimize, what to check for, and other special cases.
