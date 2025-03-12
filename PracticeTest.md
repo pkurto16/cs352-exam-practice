@@ -73,6 +73,7 @@ memory(0)
 ```
 ### Question 4: Given the following grammar, please explain which each is syntactically valid or not. If valid state the return value.
 <img width="459" alt="Screenshot 2025-03-12 at 6 08 37 PM" src="https://github.com/user-attachments/assets/588c5baf-eb29-4dae-a3cb-221e34aa2704" />
+
 a)
 ```
 if (3 == 5) {
@@ -116,6 +117,8 @@ todo: Study call and ret for functions and how they manipulate the stack to ensu
 <img width="500" alt="Screenshot 2025-03-12 at 6 18 47 PM" src="https://github.com/user-attachments/assets/34e09d34-c6fe-414a-93b9-7eb1f6617bd8" />
 
 
+
+
 ### Question 6: Prove that each expression/AST is its given type using the Axioms/Type Rules.
 a)
 ```
@@ -137,6 +140,25 @@ val x: Int = 10; If(x > 5, x + 1, x - 1)
 ```
 d)
 ```
+Type: Int
+
+AST:
+
+VarDec(
+  "c",
+  BooleanType,
+  Lit(BoolLit(true)),
+  While(
+    Ref("c"),
+    Let(
+      "dummy",
+      UnitType,
+      VarAssign("c", Lit(BoolLit(false))),
+      Lit(UnitLit())
+    ),
+    Lit(IntLit(42))
+  )
+)
 ```
 e)
 ```
@@ -145,19 +167,16 @@ Type: Int
 AST:
 
 VarDec(
-  x = "arr",
-  declaredType = ArrayType(Int),
-  initializer = ArrayDec(
-    size = IntLit(5),
-    elemType = Int
-  ),
-  body =
-    Seq(
-      Prim("block-set", List(Var("arr"), IntLit(3), IntLit(99))),
-      Prim("block-get", List(Var("arr"), IntLit(3)))
-    )
+  "arr",
+  ArrayType(IntType),
+  PrimAlloc(ArrayType(IntType), List(Lit(IntLit(5)))),
+  Let(
+    "dummy",
+    UnitType,
+    Prim("block-set", List(Ref("arr"), Lit(IntLit(3)), Lit(IntLit(99)))),
+    Prim("block-get", List(Ref("arr"), Lit(IntLit(3))))
+  )
 )
-
 ```
 ### Questions 7: Please write the AST of:
 ```
