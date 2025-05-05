@@ -1,14 +1,3 @@
-**Creating a Scala code question set**
-
-The user wants a Scala code example (around 10 lines with loops) with corresponding questions. The questions need to cover: computing free variable ranges, register allocation examples (with enough registers using graph coloring), and register allocation with spilling when there aren't enough registers. We'll also need to show linear scan for spilling and non-spilling cases.
-
-I'll structure this in Markdown with a hidden answer key, using the "details" tag for answers. Let's break it down: Scala code, questions, and hidden answers.
-
-
-Thought for 8 seconds
-
-
-````markdown
 ```scala
 def example(a: Int, b: Int): Int = {
   var x = a + b
@@ -27,7 +16,7 @@ def example(a: Int, b: Int): Int = {
   val w = x + y + z
   w
 }
-````
+```
 
 ### Questions
 
@@ -111,4 +100,3 @@ def example(a: Int, b: Int): Int = {
    * Spilled: `a`
 
 </details>
-```
